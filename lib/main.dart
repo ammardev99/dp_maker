@@ -8,7 +8,7 @@ import 'view/splash_screen.dart';
 void main() {
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
-      statusBarColor: MyColors.primary,
+      statusBarColor: MyColors.primaryDark,
       statusBarBrightness: Brightness.light,
     ),
   );
@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'DP Maker',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: MyColors.primary),
       ),

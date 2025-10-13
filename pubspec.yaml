@@ -36,7 +36,6 @@ dependencies:
   cupertino_icons: ^1.0.8
   get: ^4.7.2
   rename_app: ^1.6.5
-  flutter_launcher_icons: ^0.14.4
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true

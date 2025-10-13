@@ -15,6 +15,10 @@ class TemplateScreen extends StatefulWidget {
 }
 
 class _TemplateScreenState extends State<TemplateScreen> {
+  // final ImagePickerController pickerController = Get.put(ImagePickerController());
+  // final DownloadController downloadController = Get.put(DownloadController());
+  // final ShareController shareController = Get.put(ShareController());
+
   bool showDp = false;
 
   @override
@@ -39,12 +43,14 @@ class _TemplateScreenState extends State<TemplateScreen> {
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
+              // new dp frame
               ConstrainedBox(
                 constraints: const BoxConstraints(minWidth: 100, maxWidth: 390),
                 child: AspectRatio(
                   aspectRatio: 1, // always square
                   child: Container(
                     decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
                       image: DecorationImage(
                         image: AssetImage(widget.image),
                         fit: BoxFit.cover,
@@ -53,7 +59,15 @@ class _TemplateScreenState extends State<TemplateScreen> {
                     child:
                         showDp == true
                             ? CustomUserDP(imageUrl: MyImages.logo)
-                            : gapBox(1),
+                            : DpPlaceHolder(),
+                            // SizedBox(
+                            //   height: 50,
+                            //   width: 50,
+                            //   child: CircleAvatar(
+                            //     backgroundColor: MyColors.primary,
+                            //     child: Icon(Icons.image, color: Colors.white),
+                            //   ),
+                            // ),
                   ),
                 ),
               ),
@@ -64,6 +78,7 @@ class _TemplateScreenState extends State<TemplateScreen> {
                     ImagePickerSheet(
                       onCameraTap: () {
                         Get.back();
+                        // Call pickerController.pickFromCamera()
                         // handle camera
                       },
                       onGalleryTap: () {
@@ -71,6 +86,7 @@ class _TemplateScreenState extends State<TemplateScreen> {
                           showDp = true;
                         });
                         Get.back();
+                        //  pickerController.pickFromGallery()
                         // handle gallery
                       },
                     ),
@@ -78,7 +94,7 @@ class _TemplateScreenState extends State<TemplateScreen> {
                 },
                 child: Container(
                   height: 48,
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
                   decoration: BoxDecoration(
                     color: MyColors.foreground,
                     borderRadius: BorderRadius.circular(12),
@@ -92,6 +108,9 @@ class _TemplateScreenState extends State<TemplateScreen> {
                         style: TextStyle(color: MyColors.textDark),
                       ),
                       IconButton(
+                        padding: EdgeInsets.all(0),
+                        constraints: const BoxConstraints(),
+                        splashRadius: 1,
                         onPressed: () {
                           setState(() {
                             showDp = false;
@@ -103,7 +122,6 @@ class _TemplateScreenState extends State<TemplateScreen> {
                               showDp == true
                                   ? MyColors.primary
                                   : MyColors.border,
-                          size: 20,
                         ),
                       ),
                     ],
@@ -117,7 +135,7 @@ class _TemplateScreenState extends State<TemplateScreen> {
                   if (showDp) {
                     await showLoadingPopup();
                     // ignore: use_build_context_synchronously
-                    showPreviewDialog(context, MyImages.templates[0]);
+                    showPreviewDialog(context, widget.image);
                   } else {
                     Get.snackbar(
                       'Upload Profile',
