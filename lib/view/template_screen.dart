@@ -97,6 +97,7 @@ class _TemplateScreenState extends State<TemplateScreen> {
                           showDp = true;
                         });
                         Get.back();
+                        _pickImage(false);
                         // handle gallery
                       },
                     ),
