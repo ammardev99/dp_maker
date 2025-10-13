@@ -1,12 +1,12 @@
+import 'dart:io';
 import 'package:dp_maker/widgets/custom_user_dp.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import '../config/config_io.dart';
 
 final GlobalKey _dpKey = GlobalKey();
 
-void showPreviewDialog(BuildContext context, String imagePath) {
+void showPreviewDialog(BuildContext context, String imagePath, {File? imageFile}) {
   Get.dialog(
     barrierDismissible: false,
     Dialog(
@@ -18,7 +18,7 @@ void showPreviewDialog(BuildContext context, String imagePath) {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // DP Frame UI
+            // ✅ DP Frame UI
             RepaintBoundary(
               key: _dpKey,
               child: ConstrainedBox(
@@ -33,7 +33,11 @@ void showPreviewDialog(BuildContext context, String imagePath) {
                         fit: BoxFit.cover,
                       ),
                     ),
-                    child: CustomUserDP(imageUrl: MyImages.logo),
+                    // ✅ Pass optional picked image to CustomUserDP
+                    child: CustomUserDP(
+                      imageFile: imageFile,
+                      imageUrl: MyImages.logo,
+                    ),
                   ),
                 ),
               ),
@@ -48,26 +52,23 @@ void showPreviewDialog(BuildContext context, String imagePath) {
             infoText('Download or share your new DP easily.', alignC: true),
 
             const SizedBox(height: 10),
-            Divider(),
+            const Divider(),
             const SizedBox(height: 10),
 
-            // Bottom Buttons
+            // ✅ Bottom Buttons
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 _bottomIcon(Icons.arrow_back, 'Back', () => Get.back()),
                 _bottomIcon(Icons.download, 'Download DP', () {
-                  Get.snackbar("coming soon...", "underdevelopment");
-                  // Add download backend logic here
+                  Get.snackbar("Coming Soon", "Download functionality under development");
                 }),
                 _bottomIcon(Icons.share, 'Share', () {
-                  Get.snackbar("coming soon...", "underdevelopment");
-
-                  // Add share backend logic here
+                  Get.snackbar("Coming Soon", "Share functionality under development");
                 }),
               ],
             ),
-            gapBox(10)
+            gapBox(10),
           ],
         ),
       ),
@@ -80,16 +81,30 @@ Widget _bottomIcon(IconData icon, String label, VoidCallback onTap) {
     onTap: onTap,
     child: Column(
       children: [
-        CircleAvatar(
-          backgroundColor: MyColors.primary,
-          child: Icon(icon, color: MyColors.foreground),
-        ),
+        Icon(icon, color: MyColors.primary),
         const SizedBox(height: 4),
-        Text(
-          label,
-          style: const TextStyle(fontSize: 12, color: MyColors.textLight),
-        ),
+        Text(label, style: TextStyle(color: MyColors.textLight)),
       ],
     ),
   );
 }
+
+
+// Widget _bottomIcon(IconData icon, String label, VoidCallback onTap) {
+//   return GestureDetector(
+//     onTap: onTap,
+//     child: Column(
+//       children: [
+//         CircleAvatar(
+//           backgroundColor: MyColors.primary,
+//           child: Icon(icon, color: MyColors.foreground),
+//         ),
+//         const SizedBox(height: 4),
+//         Text(
+//           label,
+//           style: const TextStyle(fontSize: 12, color: MyColors.textLight),
+//         ),
+//       ],
+//     ),
+//   );
+// }

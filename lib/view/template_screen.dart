@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:dp_maker/widgets/custom_loading.dart';
 import 'package:dp_maker/widgets/custom_user_dp.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../config/config_io.dart';
+import '../controllers/image_cropper_controller.dart';
 import '../widgets/widget_io.dart';
 
 class TemplateScreen extends StatefulWidget {
@@ -15,17 +18,25 @@ class TemplateScreen extends StatefulWidget {
 }
 
 class _TemplateScreenState extends State<TemplateScreen> {
-  // final ImagePickerController pickerController = Get.put(ImagePickerController());
-  // final DownloadController downloadController = Get.put(DownloadController());
-  // final ShareController shareController = Get.put(ShareController());
-
   bool showDp = false;
+  File? _image;
+  final ImageCropperController _controller = ImageCropperController();
+
+  void _pickImage(bool fromCamera) async {
+    File? image = await _controller.pickAndCropImage(fromCamera: fromCamera);
+    if (image != null) {
+      setState(() {
+        _image = image;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         backgroundColor: MyColors.background,
+        // app bar
         appBar: AppBar(
           title: textHeading24('Create New DP', color: MyColors.foreground),
           centerTitle: true,
@@ -39,6 +50,7 @@ class _TemplateScreenState extends State<TemplateScreen> {
             onPressed: () => Get.back(),
           ),
         ),
+        // body
         body: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -58,40 +70,39 @@ class _TemplateScreenState extends State<TemplateScreen> {
                     ),
                     child:
                         showDp == true
-                            ? CustomUserDP(imageUrl: MyImages.logo)
+                            // ? CustomUserDP(imageUrl: MyImages.logo)
+                            ? CustomUserDP(
+                              imageUrl: MyImages.logo,
+                              imageFile: _image,
+                            )
                             : DpPlaceHolder(),
-                            // SizedBox(
-                            //   height: 50,
-                            //   width: 50,
-                            //   child: CircleAvatar(
-                            //     backgroundColor: MyColors.primary,
-                            //     child: Icon(Icons.image, color: Colors.white),
-                            //   ),
-                            // ),
                   ),
                 ),
               ),
+
               gapBox(20),
+
+              // bottomSheet & upload image
               GestureDetector(
                 onTap: () {
                   Get.bottomSheet(
                     ImagePickerSheet(
                       onCameraTap: () {
                         Get.back();
-                        // Call pickerController.pickFromCamera()
-                        // handle camera
+                        _pickImage(true);
+                        showDp = true;
                       },
                       onGalleryTap: () {
                         setState(() {
                           showDp = true;
                         });
                         Get.back();
-                        //  pickerController.pickFromGallery()
                         // handle gallery
                       },
                     ),
                   );
                 },
+                // select profile button
                 child: Container(
                   height: 48,
                   padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -103,9 +114,12 @@ class _TemplateScreenState extends State<TemplateScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        'Select Your Profile',
-                        style: TextStyle(color: MyColors.textDark),
+                      infoText(
+                        _image == null
+                            ? "Select Your Profile"
+                            : showDp == true
+                            ? "Camera Image Selected"
+                            : "Uploard Your Profile",
                       ),
                       IconButton(
                         padding: EdgeInsets.all(0),
@@ -119,9 +133,7 @@ class _TemplateScreenState extends State<TemplateScreen> {
                         icon: Icon(
                           Icons.cancel,
                           color:
-                              showDp == true
-                                  ? MyColors.primary
-                                  : MyColors.border,
+                              showDp == true ? MyColors.primary : Colors.white,
                         ),
                       ),
                     ],
@@ -129,13 +141,15 @@ class _TemplateScreenState extends State<TemplateScreen> {
                 ),
               ),
               gapBox(40),
+              // Generate DP button
               CustomButton(
                 label: 'Generate DP',
                 onPressed: () async {
                   if (showDp) {
                     await showLoadingPopup();
                     // ignore: use_build_context_synchronously
-                    showPreviewDialog(context, widget.image);
+                    showPreviewDialog(context, widget.image, imageFile: _image);
+                    // imageFile: _image
                   } else {
                     Get.snackbar(
                       'Upload Profile',
