@@ -10,7 +10,7 @@ android {
     compileSdk = 36
     ndkVersion = "27.0.12077973" // optional, only if you use native libs
 
-    defaultConfig {
+        defaultConfig {
         applicationId = "com.example.dp_maker"
         minSdk = maxOf(24, flutter.minSdkVersion) // ensure min 24 for new plugins
         targetSdk = flutter.targetSdkVersion
