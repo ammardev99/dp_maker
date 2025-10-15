@@ -3,6 +3,7 @@ import 'package:dp_maker/controllers/download_controller.dart';
 import 'package:dp_maker/widgets/custom_loading.dart';
 import 'package:dp_maker/widgets/dp_frame.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import '../config/config_io.dart';
 
@@ -57,6 +58,11 @@ void showPreviewDialog(
                   Get.back();
                   showLoadingPopup();
                     await dpController.downloadDP(customKey: _dpKey);
+                }),
+                _bottomIcon(Icons.share, 'Share', () {
+                  Fluttertoast.showToast(msg: 'share coming soon.');
+                  Get.back();
+
                 }),
               ],
             ),

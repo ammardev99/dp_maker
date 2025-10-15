@@ -14,7 +14,7 @@ class DPController extends GetxController {
   /// Download DP from a specific RepaintBoundary key
   Future<void> downloadDP({GlobalKey? customKey}) async {
     if (!await requestStoragePermission()) {
-      Fluttertoast.showToast(msg: '⚠️ Storage permission required.');
+      Fluttertoast.showToast(msg: 'Storage permission required.');
       return;
     }
 
@@ -23,25 +23,25 @@ class DPController extends GetxController {
       final boundary = boundaryKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
 
       if (boundary == null) {
-        Fluttertoast.showToast(msg: '⚠️ Unable to capture DP (no render boundary found).');
+        Fluttertoast.showToast(msg: 'Unable to capture DP Try Again.');
         return;
       }
 
       final uiImage = await boundary.toImage(pixelRatio: 3.0);
       final byteData = await uiImage.toByteData(format: ui.ImageByteFormat.png);
       if (byteData == null) {
-        Fluttertoast.showToast(msg: '⚠️ Could not process image bytes.');
+        Fluttertoast.showToast(msg: 'Could not process image bytes.');
         return;
       }
 
       final pngBytes = byteData.buffer.asUint8List();
 
-      final downloadsDir = Directory('/storage/emulated/0/Download');
+      final downloadsDir = Directory('/storage/emulated/0/Download/Dp Maker');
       if (!downloadsDir.existsSync()) {
         try {
           downloadsDir.createSync(recursive: true);
         } catch (e) {
-          Fluttertoast.showToast(msg: '⚠️ Failed to create Downloads folder: $e');
+          Fluttertoast.showToast(msg: 'Failed to create Downloads folder: $e');
           return;
         }
       }
@@ -54,7 +54,7 @@ class DPController extends GetxController {
       await file.writeAsBytes(pngBytes);
 
       await refreshGallery(file.path);
-      Fluttertoast.showToast(msg: '✅ DP saved to Downloads/$fileName');
+      Fluttertoast.showToast(msg: '✅ DP saved to Downloads/Dp Maker/$fileName');
     } catch (e) {
       Fluttertoast.showToast(msg: '❌ Failed to save DP: $e');
     }
@@ -73,7 +73,7 @@ class DPController extends GetxController {
         Fluttertoast.showToast(msg: '❌ Storage permission denied by user.');
         return false;
       } catch (e) {
-        Fluttertoast.showToast(msg: '⚠️ Permission check failed: $e');
+        Fluttertoast.showToast(msg: 'Permission check failed: $e');
         return false;
       }
     }
@@ -86,9 +86,9 @@ Future<void> refreshGallery(String filePath) async {
     await channel.invokeMethod('scanFile', {'path': filePath});
   // ignore: unused_catch_stack
   } catch (e, stack) {
-    Fluttertoast.showToast(msg: 'Check File Manager Downloads folder.');
-    // Fluttertoast.showToast(msg: '⚠️ Gallery refresh failed: $e');
-    // debugPrint('⚠️ Gallery refresh failed: $e');
+    Fluttertoast.showToast(msg: 'Check Downloads/ Dp Maker');
+    // Fluttertoast.showToast(msg: 'Gallery refresh failed: $e');
+    // debugPrint('Gallery refresh failed: $e');
     // debugPrintStack(label: 'Gallery refresh stack trace:', stackTrace: stack);
   }
 }
