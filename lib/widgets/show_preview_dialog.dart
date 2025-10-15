@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:dp_maker/widgets/custom_loading.dart';
 import 'package:dp_maker/widgets/custom_user_dp.dart';
@@ -43,10 +42,10 @@ Future<void> _downloadDP(GlobalKey key) async {
 
     // 7️⃣ Toast
     Fluttertoast.showToast(msg: 'DP Saved to Downloads/$fileName');
-    print('✅ Image saved to: $filePath');
+    // print('✅ Image saved to: $filePath');
   } catch (e) {
     Fluttertoast.showToast(msg: '❌ Failed to save DP');
-    print('Error saving image: $e');
+    // print('Error saving image: $e');
   }
 }
 
@@ -75,7 +74,7 @@ Future<void> refreshGallery(String filePath) async {
     const channel = MethodChannel('media_scanner');
     await channel.invokeMethod('scanFile', {'path': filePath});
   } catch (e) {
-    print('⚠️ Media scan failed: $e');
+    // print('⚠️ Media scan failed: $e');
   }
 }
 
