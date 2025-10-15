@@ -1,38 +1,104 @@
-// import 'dart:io';
-// import 'package:http/http.dart' as http;
-// import 'package:path_provider/path_provider.dart';
-// import 'package:permission_handler/permission_handler.dart';
+import 'dart:io';
+import 'dart:ui' as ui;
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:permission_handler/permission_handler.dart';
 
-// Future<void> downloadImage(String imageUrl) async {
-//   try {
-//     // 1️⃣ Ask for permissions
-//     if (Platform.isAndroid) {
-//       final status = await Permission.storage.request();
-//       if (!status.isGranted) {
-//         print("Permission denied");
-//         return;
-//       }
-//     }
+class DPController extends GetxController {
+  final GlobalKey dpKey = GlobalKey();
 
-//     // 2️⃣ Download image bytes
-//     final response = await http.get(Uri.parse(imageUrl));
-//     if (response.statusCode != 200) throw Exception('Failed to download image');
+  /// Download DP from a specific RepaintBoundary key
+  Future<void> downloadDP({GlobalKey? customKey}) async {
+    if (!await requestStoragePermission()) {
+      Fluttertoast.showToast(msg: '⚠️ Storage permission required.');
+      return;
+    }
 
-//     // 3️⃣ Get Downloads folder
-//     Directory? downloadDir;
-//     if (Platform.isAndroid) {
-//       downloadDir = Directory('/storage/emulated/0/Download');
-//     } else {
-//       downloadDir = await getApplicationDocumentsDirectory();
-//     }
+    try {
+      final boundaryKey = customKey ?? dpKey;
+      final boundary = boundaryKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
 
-//     // 4️⃣ Save file
-//     final fileName = 'dp_${DateTime.now().millisecondsSinceEpoch}.jpg';
-//     final file = File('${downloadDir.path}/$fileName');
-//     await file.writeAsBytes(response.bodyBytes);
+      if (boundary == null) {
+        Fluttertoast.showToast(msg: '⚠️ Unable to capture DP (no render boundary found).');
+        return;
+      }
 
-//     print('✅ Image saved to: ${file.path}');
-//   } catch (e) {
-//     print('❌ Error saving image: $e');
-//   }
-// }
+      final uiImage = await boundary.toImage(pixelRatio: 3.0);
+      final byteData = await uiImage.toByteData(format: ui.ImageByteFormat.png);
+      if (byteData == null) {
+        Fluttertoast.showToast(msg: '⚠️ Could not process image bytes.');
+        return;
+      }
+
+      final pngBytes = byteData.buffer.asUint8List();
+
+      final downloadsDir = Directory('/storage/emulated/0/Download');
+      if (!downloadsDir.existsSync()) {
+        try {
+          downloadsDir.createSync(recursive: true);
+        } catch (e) {
+          Fluttertoast.showToast(msg: '⚠️ Failed to create Downloads folder: $e');
+          return;
+        }
+      }
+
+      final now = DateTime.now();
+      final fileName = 'dp_maker_${DateFormat("yyMMdd_HHmmss").format(now)}.jpg';
+      final filePath = '${downloadsDir.path}/$fileName';
+
+      final file = File(filePath);
+      await file.writeAsBytes(pngBytes);
+
+      await refreshGallery(file.path);
+      Fluttertoast.showToast(msg: '✅ DP saved to Downloads/$fileName');
+    } catch (e) {
+      Fluttertoast.showToast(msg: '❌ Failed to save DP: $e');
+    }
+  }
+
+  Future<bool> requestStoragePermission() async {
+    if (Platform.isAndroid) {
+      try {
+        if (await Permission.manageExternalStorage.isGranted) return true;
+        if (await Permission.manageExternalStorage.request().isGranted) return true;
+        if (await Permission.storage.isGranted) return true;
+        if (await Permission.storage.request().isGranted) return true;
+        if (await Permission.photos.isGranted) return true;
+        if (await Permission.photos.request().isGranted) return true;
+
+        Fluttertoast.showToast(msg: '❌ Storage permission denied by user.');
+        return false;
+      } catch (e) {
+        Fluttertoast.showToast(msg: '⚠️ Permission check failed: $e');
+        return false;
+      }
+    }
+    return true;
+  }
+
+Future<void> refreshGallery(String filePath) async {
+  try {
+    const channel = MethodChannel('media_scanner');
+    await channel.invokeMethod('scanFile', {'path': filePath});
+  // ignore: unused_catch_stack
+  } catch (e, stack) {
+    Fluttertoast.showToast(msg: 'Check File Manager Downloads folder.');
+    // Fluttertoast.showToast(msg: '⚠️ Gallery refresh failed: $e');
+    // debugPrint('⚠️ Gallery refresh failed: $e');
+    // debugPrintStack(label: 'Gallery refresh stack trace:', stackTrace: stack);
+  }
+}
+
+
+
+
+
+
+
+
+
+}

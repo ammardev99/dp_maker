@@ -1,11 +1,11 @@
 import 'dart:io';
 
 import 'package:dp_maker/widgets/custom_loading.dart';
-import 'package:dp_maker/widgets/custom_user_dp.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../config/config_io.dart';
 import '../controllers/image_cropper_controller.dart';
+import '../widgets/dp_frame.dart';
 import '../widgets/widget_io.dart';
 
 class TemplateScreen extends StatefulWidget {
@@ -56,28 +56,11 @@ class _TemplateScreenState extends State<TemplateScreen> {
           child: Column(
             children: [
               // new dp frame
-              ConstrainedBox(
-                constraints: const BoxConstraints(minWidth: 100, maxWidth: 390),
-                child: AspectRatio(
-                  aspectRatio: 1, // always square
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      image: DecorationImage(
-                        image: AssetImage(widget.image),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    child:
-                        showDp == true
-                            // ? CustomUserDP(imageUrl: MyImages.logo)
-                            ? CustomUserDP(
-                              imageUrl: MyImages.logo,
-                              imageFile: _image,
-                            )
-                            : DpPlaceHolder(),
-                  ),
-                ),
+              DpFrame(
+                backgroundImage: widget.image,
+                imageFile: _image,
+                showDp: showDp,
+                borderRadius: 8,
               ),
 
               gapBox(20),
