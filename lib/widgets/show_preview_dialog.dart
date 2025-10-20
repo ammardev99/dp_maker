@@ -1,14 +1,15 @@
 import 'dart:io';
 import 'package:dp_maker/controllers/download_controller.dart';
+import 'package:dp_maker/controllers/share_controller.dart';
 import 'package:dp_maker/widgets/custom_loading.dart';
 import 'package:dp_maker/widgets/dp_frame.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import '../config/config_io.dart';
 
 final GlobalKey _dpKey = GlobalKey();
 final dpController = Get.put(DPController());
+// final shareController = Get.put(ShareController());
 
 void showPreviewDialog(
   BuildContext context,
@@ -57,12 +58,13 @@ void showPreviewDialog(
                 _bottomIcon(Icons.download, 'Download DP', () async {
                   Get.back();
                   showLoadingPopup();
-                    await dpController.downloadDP(customKey: _dpKey);
+                  await dpController.downloadDP(customKey: _dpKey);
                 }),
-                _bottomIcon(Icons.share, 'Share', () {
-                  Fluttertoast.showToast(msg: 'share coming soon.');
+                _bottomIcon(Icons.share, 'Share', () async {
                   Get.back();
-
+                  showLoadingPopup();
+                  // await shareController.shareDP(customKey: _dpKey);
+                  Get.back(); // close loading
                 }),
               ],
             ),
