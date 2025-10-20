@@ -38,9 +38,9 @@ flutter_launcher_icons:
   min_sdk_android: 21
 
 # dependency_overrides:
-  # image_gallery_saver: null
-    # git:
-    #   url: https://github.com/hui-z/image_gallery_saver.git
+# image_gallery_saver: null
+# git:
+#   url: https://github.com/hui-z/image_gallery_saver.git
 
 dev_dependencies:
   flutter_test:

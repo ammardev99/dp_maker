@@ -20,10 +20,12 @@ class DPController extends GetxController {
 
     try {
       final boundaryKey = customKey ?? dpKey;
-      final boundary = boundaryKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
+      final boundary =
+          boundaryKey.currentContext?.findRenderObject()
+              as RenderRepaintBoundary?;
 
       if (boundary == null) {
-        Fluttertoast.showToast(msg: 'Unable to capture DP Try Again.');
+        Fluttertoast.showToast(msg: 'Recapture the DP, Try Again.');
         return;
       }
 
@@ -47,16 +49,17 @@ class DPController extends GetxController {
       }
 
       final now = DateTime.now();
-      final fileName = 'dp_maker_${DateFormat("yyMMdd_HHmmss").format(now)}.jpg';
+      final fileName =
+          'dp_maker_${DateFormat("yyMMdd_HHmmss").format(now)}.jpg';
       final filePath = '${downloadsDir.path}/$fileName';
 
       final file = File(filePath);
       await file.writeAsBytes(pngBytes);
 
       await refreshGallery(file.path);
-      Fluttertoast.showToast(msg: '✅ DP saved to Downloads/Dp Maker/$fileName');
+      Fluttertoast.showToast(msg: 'DP saved to Downloads/Dp Maker/$fileName');
     } catch (e) {
-      Fluttertoast.showToast(msg: '❌ Failed to save DP: $e');
+      Fluttertoast.showToast(msg: 'Failed to save DP: $e');
     }
   }
 
@@ -64,7 +67,9 @@ class DPController extends GetxController {
     if (Platform.isAndroid) {
       try {
         if (await Permission.manageExternalStorage.isGranted) return true;
-        if (await Permission.manageExternalStorage.request().isGranted) return true;
+        if (await Permission.manageExternalStorage.request().isGranted) {
+          return true;
+        }
         if (await Permission.storage.isGranted) return true;
         if (await Permission.storage.request().isGranted) return true;
         if (await Permission.photos.isGranted) return true;
@@ -80,25 +85,16 @@ class DPController extends GetxController {
     return true;
   }
 
-Future<void> refreshGallery(String filePath) async {
-  try {
-    const channel = MethodChannel('media_scanner');
-    await channel.invokeMethod('scanFile', {'path': filePath});
-  // ignore: unused_catch_stack
-  } catch (e, stack) {
-    Fluttertoast.showToast(msg: 'Check Downloads/ Dp Maker');
-    // Fluttertoast.showToast(msg: 'Gallery refresh failed: $e');
-    // debugPrint('Gallery refresh failed: $e');
-    // debugPrintStack(label: 'Gallery refresh stack trace:', stackTrace: stack);
+  Future<void> refreshGallery(String filePath) async {
+    try {
+      const channel = MethodChannel('media_scanner');
+      await channel.invokeMethod('scanFile', {'path': filePath});
+      // ignore: unused_catch_stack
+    } catch (e, stack) {
+      Fluttertoast.showToast(msg: 'Check Downloads/ Dp Maker');
+      // Fluttertoast.showToast(msg: 'Gallery refresh failed: $e');
+      // debugPrint('Gallery refresh failed: $e');
+      // debugPrintStack(label: 'Gallery refresh stack trace:', stackTrace: stack);
+    }
   }
-}
-
-
-
-
-
-
-
-
-
 }

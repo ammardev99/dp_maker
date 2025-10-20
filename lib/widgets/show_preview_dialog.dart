@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:dp_maker/controllers/download_controller.dart';
-import 'package:dp_maker/controllers/share_controller.dart';
 import 'package:dp_maker/widgets/custom_loading.dart';
 import 'package:dp_maker/widgets/dp_frame.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +28,7 @@ void showPreviewDialog(
           children: [
             RepaintBoundary(
               key: _dpKey,
-              // ✅ DP Frame UI
+              // DP Frame UI
               child: DpFrame(
                 backgroundImage: imagePath,
                 imageFile: imageFile,
@@ -38,7 +37,7 @@ void showPreviewDialog(
               ),
             ),
 
-            const SizedBox(height: 16),
+            gapBox(16),
             textHeading24(
               'New DP Is Ready',
               color: MyColors.primary,
@@ -46,11 +45,11 @@ void showPreviewDialog(
             ),
             infoText('Download or share your new DP easily.', alignC: true),
 
-            const SizedBox(height: 10),
+            gapBox(10),
             const Divider(),
-            const SizedBox(height: 10),
+            gapBox(10),
 
-            // ✅ Bottom Buttons
+            //Bottom Buttons
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -60,12 +59,12 @@ void showPreviewDialog(
                   showLoadingPopup();
                   await dpController.downloadDP(customKey: _dpKey);
                 }),
-                _bottomIcon(Icons.share, 'Share', () async {
-                  Get.back();
-                  showLoadingPopup();
-                  // await shareController.shareDP(customKey: _dpKey);
-                  Get.back(); // close loading
-                }),
+                // _bottomIcon(Icons.share, 'Share', () async {
+                //   Get.back();
+                //   showLoadingPopup();
+                //   // await shareController.shareDP(customKey: _dpKey);
+                //   Get.back(); // close loading
+                // }),
               ],
             ),
             gapBox(10),

@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:dp_maker/widgets/custom_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -62,9 +61,7 @@ class _TemplateScreenState extends State<TemplateScreen> {
                 showDp: showDp,
                 borderRadius: 8,
               ),
-
               gapBox(20),
-
               // bottomSheet & upload image
               GestureDetector(
                 onTap: () {
@@ -81,7 +78,6 @@ class _TemplateScreenState extends State<TemplateScreen> {
                         });
                         Get.back();
                         _pickImage(false);
-                        // handle gallery
                       },
                     ),
                   );
@@ -103,7 +99,7 @@ class _TemplateScreenState extends State<TemplateScreen> {
                             ? "Select Your Profile"
                             : showDp == true
                             ? "Camera Image Selected"
-                            : "Uploard Your Profile",
+                            : "Upload Your Profile",
                       ),
                       IconButton(
                         padding: EdgeInsets.all(0),
@@ -112,6 +108,7 @@ class _TemplateScreenState extends State<TemplateScreen> {
                         onPressed: () {
                           setState(() {
                             showDp = false;
+                            _image = null;
                           });
                         },
                         icon: Icon(
