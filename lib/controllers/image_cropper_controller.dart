@@ -33,10 +33,12 @@ class ImageCropperController {
             statusBarColor: MyColors.primaryDark,
             hideBottomControls: false,
             lockAspectRatio: true,
+            cropStyle: CropStyle.circle, // circle crop
           ),
           IOSUiSettings(
             title: 'Crop Profile Image',
             aspectRatioLockEnabled: true,
+            cropStyle: CropStyle.circle, // circle crop
           ),
         ],
       );
